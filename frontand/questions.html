@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Questões - +Português</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { 
+            font-family:'Poppins',sans-serif; 
+            line-height:1.6; 
+            color:#2c3e50; 
+            background: linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%); 
+            min-height:100vh; 
+        }
+        .container { max-width:1400px; margin:0 auto; padding:0 20px; }
+        
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid #3498db;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #e74c3c;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo::before { content: "📚"; font-size: 1.8rem; }
+        
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .btn-back {
+            padding: 0.7rem 1.2rem;
+            background: transparent;
+            color: #3498db;
+            border: 2px solid #3498db;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .btn-back:hover {
+            background: #3498db;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .main-content { padding: 120px 0 80px; }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+        }
+        
+        .filters-bar {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr auto;
+            gap: 1rem;
+            align-items: end;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            position: relative;
+        }
+        .filter-group label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #34495e;
+        }
+        .filter-group input,
+        .filter-group select {
+            padding: 0.8rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+        }
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .search-loading {
+            position: absolute;
+            right: 10px;
+            bottom: 12px;
+            color: #95a5a6;
+            font-size: 0.8rem;
+            display: none;
+        }
+        .search-loading.active { display: block; }
+        
+        .btn-filter {
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-filter:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3498db;
+        }
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .questions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+        
+        .question-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .question-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+        .question-card.fechada::before { background: #3498db; }
+        .question-card.aberta::before { background: #f39c12; }
+        
+        .question-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        
+        .question-type {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .question-type.fechada {
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+        }
+        .question-type.aberta {
+            background: rgba(243, 156, 18, 0.1);
+            color: #f39c12;
+        }
+        
+        .question-id {
+            color: #95a5a6;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .question-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.8rem;
+            line-height: 1.4;
+        }
+        
+        .question-enunciado {
+            color: #34495e;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            max-height: 4.8em;
+            overflow: hidden;
+            position: relative;
+        }
+        .question-enunciado::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 30%;
+            height: 1.6em;
+            background: linear-gradient(to right, transparent, white);
+        }
+        
+        .question-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .meta-tag {
+            padding: 0.3rem 0.7rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        .meta-tag.filtro { background: rgba(155, 89, 182, 0.1); color: #9b59b6; }
+        .meta-tag.dificuldade { background: rgba(231, 76, 60, 0.1); color: #e74c3c; }
+        
+        .question-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #ecf0f1;
+        }
+        .btn-action {
+            flex: 1;
+            padding: 0.6rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+        .btn-view {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+        .btn-view:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
+        }
+        .btn-edit {
+            background: transparent;
+            color: #f39c12;
+            border: 2px solid #f39c12;
+        }
+        .btn-edit:hover {
+            background: #f39c12;
+            color: white;
+        }
+        .btn-delete {
+            background: transparent;
+            color: #e74c3c;
+            border: 2px solid #e74c3c;
+        }
+        .btn-delete:hover {
+            background: #e74c3c;
+            color: white;
+        }
+        .btn-delete.loading {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            animation: fadeIn 0.3s ease-out;
+        }
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        .empty-state-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        .empty-state-text {
+            color: #7f8c8d;
+            margin-bottom: 1.5rem;
+        }
+        .btn-create {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        .btn-create:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: #7f8c8d;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.95); }
+        }
+        
+        @media (max-width: 768px) {
+            .filters-bar { grid-template-columns: 1fr; }
+            .questions-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="dashboard.html" class="logo">+Português</a>
+            <div class="nav-right">
+                <a href="dashboard.html" class="btn-back">← Voltar</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title" id="pageTitle">Minhas Questões 📚</h1>
+                <p class="page-subtitle" id="pageSubtitle">Gerencie todas as suas questões criadas</p>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalCount">0</div>
+                    <div class="stat-label">Total de Questões</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="fechadaCount">0</div>
+                    <div class="stat-label">Questões Fechadas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="abertaCount">0</div>
+                    <div class="stat-label">Questões Abertas</div>
+                </div>
+            </div>
+
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <label>🔍 Buscar</label>
+                    <input type="text" id="searchInput" placeholder="Buscar por título ou conteúdo...">
+                    <span class="search-loading" id="searchLoading">Buscando...</span>
+                </div>
+                <div class="filter-group">
+                    <label>📋 Tipo</label>
+                    <select id="tipoFilter">
+                        <option value="">Todos</option>
+                        <option value="fechada">Objetiva</option>
+                        <option value="aberta">Dissertativa</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>🏷️ Categoria</label>
+                    <select id="categoriaFilter">
+                        <option value="">Todas</option>
+                        <!-- opções dinâmicas -->
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>⭐ Dificuldade</label>
+                    <select id="dificuldadeFilter">
+                        <option value="">Todas</option>
+                        <option value="facil">Fácil</option>
+                        <option value="medio">Médio</option>
+                        <option value="dificil">Difícil</option>
+                    </select>
+                </div>
+                <button class="btn-filter" onclick="applyFilters()">Filtrar</button>
+            </div>
+
+            <div id="questionsContainer">
+                <div class="loading">Carregando questões...</div>
+            </div>
+        </div>
+    </main>
+
+<script>
+    const API_BASE = "http://127.0.0.1:8000";
+
+    // Exige login
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = 'login.html';
+    }
+
+    let allQuestions = [];
+    let searchTimeout = null;
+
+    function getUrlFilter() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('filtro_principal');
+    }
+
+    async function loadCategoriesFilter() {
+        const select = document.getElementById('categoriaFilter');
+        if (!select) return;
+
+        select.innerHTML = '<option value="">Todas</option>';
+
+        try {
+            const resp = await fetch(`${API_BASE}/questions/categories`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!resp.ok) return;
+
+            const categorias = await resp.json();
+            categorias.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.textContent = cat;
+                select.appendChild(opt);
+            });
+
+            // se veio filtro pela URL, já seleciona
+            const urlFilter = getUrlFilter();
+            if (urlFilter) {
+                select.value = urlFilter;
+            }
+        } catch (err) {
+            console.error('Erro ao carregar categorias:', err);
+        }
+    }
+
+    async function loadQuestions() {
+        try {
+            const urlFilter = getUrlFilter();
+
+            // 🔴 IMPORTANTE: sempre buscar TODAS as questões do usuário
+            const resp = await fetch(`${API_BASE}/questions/`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!resp.ok) throw new Error('Erro ao carregar questões');
+
+            allQuestions = await resp.json();
+            updateStats();
+
+            // Ajusta título/subtítulo conforme URL ou padrão
+            if (urlFilter) {
+                document.getElementById('pageTitle').textContent = `${urlFilter} 📚`;
+                document.getElementById('pageSubtitle').textContent = 'Questões filtradas por categoria';
+                // garante que o select de categoria siga o filtro inicial
+                const catSelect = document.getElementById('categoriaFilter');
+                if (catSelect) {
+                    catSelect.value = urlFilter;
+                }
+            } else {
+                document.getElementById('pageTitle').textContent = 'Minhas Questões 📚';
+                document.getElementById('pageSubtitle').textContent =
+                    'Gerencie todas as suas questões criadas';
+            }
+
+            applyFilters();
+        } catch (err) {
+            console.error(err);
+            document.getElementById('questionsContainer').innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">❌</div>
+                    <h2 class="empty-state-title">Erro ao carregar questões</h2>
+                    <p class="empty-state-text">${err.message}</p>
+                </div>
+            `;
+        }
+    }
+
+    function updateStats() {
+        document.getElementById('totalCount').textContent = allQuestions.length;
+        document.getElementById('fechadaCount').textContent =
+            allQuestions.filter(q => q.tipo === 'fechada').length;
+        document.getElementById('abertaCount').textContent =
+            allQuestions.filter(q => q.tipo === 'aberta').length;
+    }
+
+    function createQuestionCard(q) {
+        const dificuldadeLabel = {
+            'facil': 'Fácil',
+            'medio': 'Médio',
+            'dificil': 'Difícil'
+        };
+
+        return `
+            <div class="question-card ${q.tipo}" data-question-id="${q.id}">
+                <div class="question-header">
+                    <span class="question-type ${q.tipo}">
+                        ${q.tipo === 'fechada' ? 'Objetiva' : 'Dissertativa'}
+                    </span>
+                    <span class="question-id">#${q.id}</span>
+                </div>
+                <h3 class="question-title">${q.titulo || ''}</h3>
+                <p class="question-enunciado">${q.enunciado || ''}</p>
+                <div class="question-meta">
+                    ${q.filtro_principal ? `<span class="meta-tag filtro">${q.filtro_principal}</span>` : ''}
+                    ${q.dificuldade ? `<span class="meta-tag dificuldade">${dificuldadeLabel[q.dificuldade] || q.dificuldade}</span>` : ''}
+                    ${q.tipo === 'fechada' && q.alternativas ?
+                        `<span class="meta-tag">${q.alternativas.length} alternativas</span>` : ''}
+                </div>
+                <div class="question-actions">
+                    <a href="question-details.html?id=${q.id}" class="btn-action btn-view">👁️ Ver</a>
+                    <a href="edit-question.html?id=${q.id}" class="btn-action btn-edit">✏️ Editar</a>
+                    <button class="btn-action btn-delete" onclick="deleteQuestion(${q.id}, event)">🗑️ Excluir</button>
+                </div>
+            </div>
+        `;
+    }
+
+    function displayQuestions(questions) {
+        const container = document.getElementById('questionsContainer');
+
+        if (!questions.length) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📝</div>
+                    <h2 class="empty-state-title">Nenhuma questão encontrada</h2>
+                    <p class="empty-state-text">Comece criando sua primeira questão!</p>
+                    <a href="create-question.html" class="btn-create">+ Criar Questão</a>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = `
+            <div class="questions-grid">
+                ${questions.map(createQuestionCard).join('')}
+            </div>
+        `;
+    }
+
+    function applyFilters() {
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        const tipo = document.getElementById('tipoFilter').value;
+        const categoria = document.getElementById('categoriaFilter').value;
+        const dificuldade = document.getElementById('dificuldadeFilter').value;
+
+        let filtered = [...allQuestions];
+
+        if (search) {
+            filtered = filtered.filter(q =>
+                (q.titulo || '').toLowerCase().includes(search) ||
+                (q.enunciado || '').toLowerCase().includes(search)
+            );
+        }
+        if (tipo) {
+            filtered = filtered.filter(q => q.tipo === tipo);
+        }
+        if (categoria) {
+            filtered = filtered.filter(q => q.filtro_principal === categoria);
+        }
+        if (dificuldade) {
+            filtered = filtered.filter(q => q.dificuldade === dificuldade);
+        }
+
+        displayQuestions(filtered);
+    }
+
+    async function deleteQuestion(id, event) {
+        if (!confirm('⚠️ Tem certeza que deseja excluir esta questão?\n\nEsta ação não pode ser desfeita!')) {
+            return;
+        }
+
+        const btn = event.target;
+        const card = btn.closest('.question-card');
+
+        btn.disabled = true;
+        btn.classList.add('loading');
+        btn.textContent = '🔄 Excluindo...';
+
+        try {
+            const resp = await fetch(`${API_BASE}/questions/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+
+            if (!resp.ok) throw new Error('Erro ao excluir');
+
+            card.style.animation = 'fadeOut 0.3s ease-out';
+            setTimeout(loadQuestions, 300);
+        } catch (err) {
+            alert('❌ Erro ao excluir questão: ' + err.message);
+            btn.disabled = false;
+            btn.classList.remove('loading');
+            btn.textContent = '🗑️ Excluir';
+        }
+    }
+
+    // Eventos dos filtros
+    document.getElementById('searchInput').addEventListener('input', () => {
+        const loader = document.getElementById('searchLoading');
+        loader.classList.add('active');
+
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            applyFilters();
+            loader.classList.remove('active');
+        }, 500);
+    });
+
+    document.getElementById('tipoFilter').addEventListener('change', applyFilters);
+    document.getElementById('dificuldadeFilter').addEventListener('change', applyFilters);
+
+    document.getElementById('categoriaFilter').addEventListener('change', (e) => {
+        const newCat = e.target.value;
+        const params = new URLSearchParams(window.location.search);
+
+        if (newCat) {
+            params.set('filtro_principal', newCat);
+        } else {
+            params.delete('filtro_principal');
+        }
+
+        history.replaceState(
+            null,
+            '',
+            window.location.pathname + (params.toString() ? '?' + params.toString() : '')
+        );
+
+        // Agora o filtro é só local usando allQuestions completo
+        applyFilters();
+    });
+
+    // Inicialização
+    (async function init() {
+        await loadCategoriesFilter();
+        await loadQuestions();
+    })();
+</script>
+
+</body>
+</html>

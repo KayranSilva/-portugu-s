@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Questão - +Português</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { 
+            font-family:'Poppins',sans-serif; 
+            line-height:1.6; 
+            color:#2c3e50; 
+            background: linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%); 
+            min-height:100vh; 
+            padding: 2rem 0;
+        }
+        .container { max-width:900px; margin:0 auto; padding:0 20px; }
+        
+        .header-bar {
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn-back {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+        .btn-back:hover {
+            background: rgba(52, 152, 219, 0.1);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #e74c3c;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo::before { content: "📚"; font-size: 1.5rem; }
+        
+        .question-container {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .question-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+        
+        .question-container.fechada::before { background: linear-gradient(90deg, #3498db, #2980b9); }
+        .question-container.aberta::before { background: linear-gradient(90deg, #f39c12, #e67e22); }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        
+        .question-id {
+            font-size: 0.9rem;
+            color: #95a5a6;
+            font-weight: 600;
+        }
+        
+        .question-type-badge {
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .question-type-badge.fechada {
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+        }
+        .question-type-badge.aberta {
+            background: rgba(243, 156, 18, 0.1);
+            color: #f39c12;
+        }
+        
+        .question-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+        }
+        
+        .question-section {
+            margin-bottom: 2.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .enunciado-box {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #3498db;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #2c3e50;
+            white-space: pre-wrap;
+        }
+
+        .image-box {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #e74c3c;
+            text-align: center;
+        }
+
+        .image-box img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .alternativas-list {
+            list-style: none;
+        }
+        
+        .alternativa-item {
+            background: #f8f9fa;
+            padding: 1.2rem;
+            margin-bottom: 0.8rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .alternativa-item:hover {
+            transform: translateX(5px);
+            border-color: #e1e8ed;
+        }
+        
+        .alternativa-item.correta {
+            background: rgba(39, 174, 96, 0.1);
+            border-color: #27ae60;
+        }
+        
+        .alternativa-letra {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        
+        .alternativa-item.correta .alternativa-letra {
+            background: linear-gradient(135deg, #27ae60, #229954);
+        }
+        
+        .alternativa-texto {
+            flex: 1;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        .gabarito-badge {
+            background: #27ae60;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .meta-card {
+            background: #f8f9fa;
+            padding: 1.2rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .meta-label {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .meta-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .resposta-box {
+            background: #f0f8ff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #3498db;
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #2c3e50;
+            white-space: pre-wrap;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #ecf0f1;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-edit {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+        
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(243, 156, 18, 0.4);
+        }
+        
+        .btn-delete {
+            background: transparent;
+            color: #e74c3c;
+            border: 2px solid #e74c3c;
+        }
+        
+        .btn-delete:hover {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: #7f8c8d;
+        }
+        
+        .error-message {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #e74c3c;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .question-container {
+                padding: 1.5rem;
+            }
+            .question-title {
+                font-size: 1.5rem;
+            }
+            .meta-grid {
+                grid-template-columns: 1fr;
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-bar">
+            <a href="questions.html" class="btn-back">← Voltar para Questões</a>
+            <a href="dashboard.html" class="logo">+Português</a>
+        </div>
+
+        <div id="questionContainer">
+            <div class="loading">Carregando questão...</div>
+        </div>
+    </div>
+
+    <script>
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = 'login.html';
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const questionId = urlParams.get('id');
+
+    if (!questionId) {
+        document.getElementById('questionContainer').innerHTML = `
+            <div class="error-message">
+                <h2>❌ ID da questão não encontrado</h2>
+                <p>Por favor, volte e selecione uma questão.</p>
+            </div>
+        `;
+    } else {
+        loadQuestion(questionId);
+    }
+
+    async function loadQuestion(id) {
+        try {
+            const resp = await fetch(`http://127.0.0.1:8000/questions/${id}`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+
+            if (!resp.ok) throw new Error('Questão não encontrada');
+
+            const question = await resp.json();
+            displayQuestion(question);
+        } catch (err) {
+            console.error(err);
+            document.getElementById('questionContainer').innerHTML = `
+                <div class="error-message">
+                    <h2>❌ Erro ao carregar questão</h2>
+                    <p>${err.message}</p>
+                </div>
+            `;
+        }
+    }
+
+    function displayQuestion(q) {
+        const dificuldadeLabel = {
+            'facil': 'Fácil',
+            'medio': 'Médio',
+            'dificil': 'Difícil'
+        };
+
+        let html = `
+            <div class="question-container ${q.tipo}">
+                <div class="question-header">
+                    <span class="question-id">#${q.id}</span>
+                    <span class="question-type-badge ${q.tipo}">
+                        ${q.tipo === 'fechada' ? '📄 Objetiva' : '✏️ Dissertativa'}
+                    </span>
+                </div>
+
+                <h1 class="question-title">${q.titulo}</h1>
+
+                <div class="meta-grid">
+                    ${q.filtro_principal ? `
+                        <div class="meta-card">
+                            <div class="meta-label">Categoria</div>
+                            <div class="meta-value">${q.filtro_principal}</div>
+                        </div>` : ''}
+                    ${q.dificuldade ? `
+                        <div class="meta-card">
+                            <div class="meta-label">Dificuldade</div>
+                            <div class="meta-value">${dificuldadeLabel[q.dificuldade] || q.dificuldade}</div>
+                        </div>` : ''}
+                    ${q.subgenero ? `
+                        <div class="meta-card">
+                            <div class="meta-label">Subgênero</div>
+                            <div class="meta-value">${q.subgenero}</div>
+                        </div>` : ''}
+                    ${q.fonte_nome ? `
+                        <div class="meta-card">
+                            <div class="meta-label">Fonte</div>
+                            <div class="meta-value">${q.fonte_nome}${q.fonte_ano ? ` (${q.fonte_ano})` : ''}</div>
+                        </div>` : ''}
+                </div>
+
+                <div class="question-section">
+                    <h3 class="section-title">📝 Enunciado</h3>
+                    <div class="enunciado-box">${q.enunciado}</div>
+                </div>
+
+                ${q.image_url ? `
+                    <div class="question-section">
+                        <h3 class="section-title">🖼️ Imagem da Questão</h3>
+                        <div class="image-box">
+                            <img src="${q.image_url}" alt="Imagem da questão">
+                        </div>
+                    </div>` : ''}
+        `;
+
+        if (q.tipo === 'fechada' && q.alternativas) {
+            html += `
+                <div class="question-section">
+                    <h3 class="section-title">📋 Alternativas</h3>
+                    <ul class="alternativas-list">
+            `;
+            q.alternativas.forEach((alt, idx) => {
+                const letter = String.fromCharCode(65 + idx);
+                const isCorrect = q.gabarito === letter;
+                html += `
+                    <li class="alternativa-item ${isCorrect ? 'correta' : ''}">
+                        <div class="alternativa-letra">${letter}</div>
+                        <div class="alternativa-texto">
+                            ${alt}
+                            ${isCorrect ? '<span class="gabarito-badge">✓ Resposta Correta</span>' : ''}
+                        </div>
+                    </li>
+                `;
+            });
+            html += `
+                    </ul>
+                </div>
+            `;
+            if (q.gabarito) {
+                html += `
+                    <div class="question-section">
+                        <h3 class="section-title">✅ Gabarito</h3>
+                        <p style="font-size:1.2rem; font-weight:600; color:#27ae60;">
+                            Alternativa ${q.gabarito}
+                        </p>
+                    </div>
+                `;
+            }
+        }
+
+        if (q.tipo === 'aberta' && q.resposta_esperada) {
+            html += `
+                <div class="question-section">
+                    <h3 class="section-title">📝 Resposta Esperada</h3>
+                    <div class="resposta-box">${q.resposta_esperada}</div>
+                </div>
+            `;
+        }
+
+        html += `
+                <div class="action-buttons">
+                    <button class="btn btn-edit" onclick="editQuestion(${q.id})">✏️ Editar Questão</button>
+                    <button class="btn btn-delete" onclick="deleteQuestion(${q.id})">🗑️ Excluir Questão</button>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('questionContainer').innerHTML = html;
+    }
+
+    function editQuestion(id) {
+        window.location.href = `edit-question.html?id=${id}`;
+    }
+
+    async function deleteQuestion(id) {
+        if (!confirm('⚠️ Tem certeza que deseja excluir esta questão?\n\nEsta ação não pode ser desfeita!')) {
+            return;
+        }
+
+        try {
+            const resp = await fetch(`http://127.0.0.1:8000/questions/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+
+            if (!resp.ok) throw new Error('Erro ao excluir');
+
+            alert('✅ Questão excluída com sucesso!');
+            window.location.href = 'questions.html';
+        } catch (err) {
+            alert('❌ Erro ao excluir questão: ' + err.message);
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - +Português</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid #3498db;
+        }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
+
+        .logo {
+            font-size: 2rem; font-weight: 700; color: #e74c3c;
+            text-decoration: none; display: flex; align-items: center; gap: 10px;
+        }
+        .logo::before { content: "📚"; font-size: 1.8rem; }
+
+        .nav-right { display: flex; align-items: center; gap: 1.5rem; }
+
+        .user-menu { position: relative; }
+        .user-btn {
+            display: flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.2rem;
+            background: rgba(52, 152, 219, 0.1); border: 2px solid #3498db; border-radius: 25px;
+            cursor: pointer; transition: all 0.3s; text-decoration: none; color: #3498db; font-weight: 500;
+        }
+        .user-btn:hover { background: #3498db; color: white; transform: translateY(-2px); }
+
+        .user-dropdown {
+            position: absolute; top: calc(100% + 10px); right: 0; background: white; border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 0.5rem 0; min-width: 180px;
+            display: none; z-index: 1001;
+        }
+        .user-dropdown.active { display: block; animation: slideDown 0.3s ease-out; }
+        .user-dropdown a {
+            display: block; padding: 0.7rem 1.2rem; color: #34495e;
+            text-decoration: none; transition: background 0.2s;
+        }
+        .user-dropdown a:hover { background: #f8f9fa; }
+
+        .btn-new {
+            padding: 0.7rem 1.5rem; background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white; border: none; border-radius: 25px; cursor: pointer;
+            font-weight: 600; text-decoration: none; display: inline-block;
+            transition: all 0.3s ease; font-size: 0.9rem;
+        }
+        .btn-new:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .main-content { padding: 120px 0 80px; }
+
+        .page-header { text-align: center; margin-bottom: 3rem; }
+        .welcome-message {
+            font-size: 2.5rem; font-weight: 700; color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        .subtitle { font-size: 1.1rem; color: #7f8c8d; margin-bottom: 2rem; }
+
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem; margin-bottom: 3rem;
+        }
+        .stat-card {
+            background: white; border-radius: 15px; padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08); transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        }
+        .stat-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .stat-number { font-size: 2.5rem; font-weight: 700; color: #3498db; margin-bottom: 0.5rem; }
+        .stat-label { color: #7f8c8d; font-size: 0.9rem; }
+
+        .filter-groups { margin-bottom: 3rem; }
+
+        .section-title {
+            font-size: 1.8rem; font-weight: 600; color: #2c3e50;
+            margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;
+        }
+
+        .groups-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem; margin-top: 2rem;
+        }
+
+        .group-card {
+            background: white; border-radius: 20px; padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease; border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative; overflow: hidden;
+        }
+        .group-card::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+        }
+        .group-card.alt-1::before { background: linear-gradient(90deg, #e74c3c, #c0392b); }
+        .group-card.alt-2::before { background: linear-gradient(90deg, #9b59b6, #8e44ad); }
+        .group-card.alt-3::before { background: linear-gradient(90deg, #f39c12, #e67e22); }
+
+        .group-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); }
+
+        .group-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+
+        .group-title { font-size: 1.5rem; font-weight: 600; color: #2c3e50; margin-bottom: 0.5rem; }
+
+        .group-stats {
+            display: flex; justify-content: space-between; margin-bottom: 1.5rem;
+            padding: 1rem; background: #f8f9fa; border-radius: 10px;
+        }
+        .stat-item { text-align: center; }
+        .stat-item .stat-number { font-size: 1.8rem; font-weight: 700; color: #3498db; }
+        .stat-item .stat-label {
+            font-size: 0.8rem; color: #7f8c8d; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        .group-actions { display: flex; gap: 1rem; }
+        .btn-group {
+            flex: 1; padding: 0.8rem 1rem; border: none; border-radius: 10px;
+            cursor: pointer; font-weight: 500; transition: all 0.3s ease;
+            text-decoration: none; text-align: center; font-size: 0.9rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9); color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        .btn-edit {
+            background: linear-gradient(135deg, #f39c12, #e67e22); color: white;
+        }
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.4);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.3s ease-out;
+        }
+        .modal-header {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        .modal-body {
+            margin-bottom: 1.5rem;
+        }
+        .modal-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+        }
+        .modal-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        .modal-footer {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        .btn-modal {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        .btn-modal-primary {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
+        .btn-modal-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+        .btn-modal-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        .btn-modal-secondary:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 768px) {
+            .welcome-message { font-size: 2rem; }
+            .groups-grid { grid-template-columns: 1fr; }
+            .nav-right { flex-direction: column; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav class="container">
+        <a href="dashboard.html" class="logo">+Português</a>
+        <div class="nav-right">
+            <a href="create-question.html" class="btn-new">+ Nova Questão</a>
+            <div class="user-menu">
+                <a href="#" class="user-btn" id="userBtn">👨‍🏫 <span id="userName">Usuário</span></a>
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="#" onclick="logout()">Sair</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="main-content">
+    <div class="container">
+        <div class="page-header">
+            <h1 class="welcome-message">Bem-vindo de volta! 👋</h1>
+            <p class="subtitle">Gerencie e organize sua biblioteca de questões</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-number" id="totalQuestions">0</div><div class="stat-label">Total de Questões</div></div>
+            <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-number" id="totalClosed">0</div><div class="stat-label">Questões Fechadas</div></div>
+            <div class="stat-card"><div class="stat-icon">✍️</div><div class="stat-number" id="totalOpen">0</div><div class="stat-label">Questões Abertas</div></div>
+        </div>
+
+        <section class="filter-groups">
+            <h2 class="section-title">
+                📂 Suas Categorias de Questões
+                <button id="addCategoryBtn" style="
+                    margin-left:auto;
+                    padding:0.4rem 0.9rem;
+                    font-size:0.8rem;
+                    border-radius:999px;
+                    border:none;
+                    cursor:pointer;
+                    background:linear-gradient(135deg,#27ae60,#229954);
+                    color:#fff;
+                    font-weight:600;
+                ">+ Nova categoria</button>
+            </h2>
+            <div class="groups-grid" id="categoriesGrid">
+                <!-- carregadas via JS -->
+            </div>
+        </section>
+    </div>
+</main>
+
+<!-- Modal de Editar Categoria -->
+<div class="modal" id="editCategoryModal">
+    <div class="modal-content">
+        <div class="modal-header">Editar Categoria</div>
+        <div class="modal-body">
+            <label style="display:block; margin-bottom:0.7rem; color:#34495e; font-weight:600; font-size:1rem;">Nome da Categoria</label>
+            <input type="text" class="modal-input" id="editCategoryInput" placeholder="Digite o novo nome...">
+        </div>
+        <div class="modal-footer">
+            <button class="btn-modal btn-modal-secondary" onclick="closeEditModal()">Cancelar</button>
+            <button class="btn-modal btn-modal-primary" onclick="saveEditCategory()">Salvar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const API_BASE = "http://127.0.0.1:8000";
+
+document.addEventListener("DOMContentLoaded", async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return window.location.href = "login.html";
+
+    const meResp = await fetch(`${API_BASE}/auth/me`, { headers: { Authorization: "Bearer " + token } });
+    if (!meResp.ok) return window.location.href = "login.html";
+    const me = await meResp.json();
+    document.getElementById("userName").textContent = me.user_name?.split(" ")[0] || "Usuário";
+
+    document.getElementById("userBtn").onclick = () =>
+        document.getElementById("userDropdown").classList.toggle("active");
+
+    window.logout = () => { localStorage.clear(); window.location.href = "login.html"; };
+
+    document.getElementById("addCategoryBtn").onclick = () => {
+        const name = prompt("Digite o nome da nova categoria:");
+        if (!name) return;
+        const encoded = encodeURIComponent(name.trim());
+        window.location.href = `create-question.html?nova_categoria=${encoded}`;
+    };
+
+    await loadStats(token);
+    await loadCategoriesStats(token);
+});
+
+async function loadStats(token) {
+    try {
+        const resp = await fetch(`${API_BASE}/questions/`, { headers: { Authorization: "Bearer " + token } });
+        if (!resp.ok) throw new Error();
+        const questions = await resp.json();
+        document.getElementById("totalQuestions").textContent = questions.length;
+        document.getElementById("totalClosed").textContent = questions.filter(q => q.tipo === "fechada").length;
+        document.getElementById("totalOpen").textContent = questions.filter(q => q.tipo === "aberta").length;
+    } catch { console.warn("Erro ao carregar stats"); }
+}
+
+async function loadCategoriesStats(token) {
+    const grid = document.getElementById("categoriesGrid");
+    grid.innerHTML = "<p style='color:#7f8c8d;'>Carregando categorias...</p>";
+    try {
+        const resp = await fetch(`${API_BASE}/questions/categories/stats`, { headers: { Authorization: "Bearer " + token } });
+        if (!resp.ok) throw new Error();
+        const stats = await resp.json();
+        grid.innerHTML = stats.map((cat, i) => {
+            const color = `alt-${(i % 3) + 1}`;
+            const encoded = encodeURIComponent(cat.name);
+            return `
+                <div class="group-card ${color}">
+                    <div class="group-icon">📂</div>
+                    <h3 class="group-title">${cat.name}</h3>
+                    <div class="group-stats">
+                        <div class="stat-item"><div class="stat-number">${cat.total}</div><div class="stat-label">Total</div></div>
+                        <div class="stat-item"><div class="stat-number">${cat.fechadas}</div><div class="stat-label">Fechadas</div></div>
+                        <div class="stat-item"><div class="stat-number">${cat.abertas}</div><div class="stat-label">Abertas</div></div>
+                    </div>
+                    <div class="group-actions">
+                        <a href="questions.html?filtro_principal=${encoded}" class="btn-group btn-primary">Visualizar Questões</a>
+                        <button class="btn-group btn-edit" onclick="editCategory('${cat.name}', this)">✏️ Editar</button>
+                    </div>
+                </div>
+            `;
+        }).join("");
+    } catch {
+        grid.innerHTML = "<p style='color:#e74c3c;'>❌ Erro ao carregar categorias.</p>";
+    }
+}
+
+// ===== VARIÁVEIS GLOBAIS PARA EDIÇÃO =====
+let currentCategoryName = "";
+let editCategoryToken = "";
+
+// ===== FUNÇÕES DE EDIÇÃO =====
+function editCategory(categoryName, button) {
+    currentCategoryName = categoryName;
+    editCategoryToken = localStorage.getItem("token");
+    document.getElementById("editCategoryInput").value = categoryName;
+    document.getElementById("editCategoryModal").classList.add("active");
+    document.getElementById("editCategoryInput").focus();
+}
+
+function closeEditModal() {
+    document.getElementById("editCategoryModal").classList.remove("active");
+    currentCategoryName = "";
+}
+
+async function saveEditCategory() {
+    const newName = document.getElementById("editCategoryInput").value.trim();
+    
+    if (!newName) {
+        alert("❌ O nome da categoria não pode estar vazio.");
+        return;
+    }
+
+    if (newName === currentCategoryName) {
+        closeEditModal();
+        return;
+    }
+
+    const saveBtn = document.querySelector("#editCategoryModal .btn-modal-primary");
+    const originalText = saveBtn.textContent;
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Salvando...";
+
+    try {
+        const resp = await fetch(`${API_BASE}/questions/rename-category`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + editCategoryToken
+            },
+            body: JSON.stringify({
+                old_name: currentCategoryName,
+                new_name: newName
+            })
+        });
+
+        const data = await resp.json().catch(() => ({}));
+
+        if (!resp.ok) {
+            throw new Error(data.detail || "Erro ao renomear categoria");
+        }
+
+        alert("✅ Categoria renomeada com sucesso!");
+        closeEditModal();
+        await loadCategoriesStats(editCategoryToken);
+    } catch (err) {
+        console.error(err);
+        alert("❌ Erro ao renomear categoria: " + err.message);
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = originalText;
+    }
+}
+
+// ===== FECHAR MODAL AO CLICAR FORA =====
+document.addEventListener("click", (e) => {
+    const modal = document.getElementById("editCategoryModal");
+    if (e.target === modal) {
+        closeEditModal();
+    }
+});
+
+// ===== CONFIRMAR COM ENTER NO INPUT =====
+const editInput = document.getElementById("editCategoryInput");
+if (editInput) {
+    editInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            saveEditCategory();
+        }
+    });
+}
+</script>
+</body>
+</html>
+/questions

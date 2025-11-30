@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Criar Questão - +Português</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family:'Poppins',sans-serif;
+            line-height:1.6;
+            color:#2c3e50;
+            background: linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%);
+            min-height:100vh;
+            padding:2rem 0;
+        }
+        .container { max-width:900px; margin:0 auto; padding:0 20px; }
+
+        .header-mini {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            margin-bottom:2rem;
+            background:white;
+            padding:1rem 2rem;
+            border-radius:15px;
+            box-shadow:0 5px 15px rgba(0,0,0,0.1);
+        }
+        .back-btn {
+            color:#3498db;
+            text-decoration:none;
+            font-weight:500;
+            padding:0.5rem 1rem;
+            border-radius:25px;
+            display:flex;
+            align-items:center;
+            gap:0.5rem;
+        }
+        .back-btn:hover { background: rgba(52, 152, 219, 0.1); }
+        .logo {
+            font-size:1.8rem;
+            font-weight:700;
+            color:#e74c3c;
+            text-decoration:none;
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+        .logo::before { content:"📚"; font-size:1.5rem; }
+
+        .form-container {
+            background:white;
+            border-radius:20px;
+            padding:2.5rem;
+            box-shadow:0 15px 35px rgba(0,0,0,0.1);
+            position:relative;
+            overflow:hidden;
+        }
+        .form-container::before {
+            content:"";
+            position:absolute;
+            top:0;
+            left:0;
+            right:0;
+            height:4px;
+            background:linear-gradient(90deg,#e74c3c,#f39c12,#27ae60,#3498db);
+        }
+
+        .form-header { text-align:center; margin-bottom:2.5rem; }
+        .form-header h1 {
+            font-size:2.2rem;
+            font-weight:700;
+            color:#2c3e50;
+            margin-bottom:0.5rem;
+        }
+
+        .form-row {
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:1.5rem;
+        }
+        .form-group { margin-bottom:1.5rem; }
+        label {
+            display:block;
+            margin-bottom:0.7rem;
+            color:#34495e;
+            font-weight:600;
+            font-size:1rem;
+        }
+        input, select, textarea {
+            width:100%;
+            padding:1rem;
+            border:2px solid #e1e8ed;
+            border-radius:12px;
+            font-size:1rem;
+            background:#fafbfc;
+            font-family:'Poppins',sans-serif;
+            transition:all 0.3s;
+        }
+        textarea { min-height:120px; resize:vertical; }
+        input:focus, select:focus, textarea:focus {
+            outline:none;
+            border-color:#3498db;
+            box-shadow:0 0 0 3px rgba(52,152,219,0.1);
+            background:white;
+            transform:translateY(-1px);
+        }
+
+        .enunciado-section, .alternativas-section, .filter-section,
+        .resposta-section, .fonte-section, .imagem-section {
+            background:#f8f9fa;
+            border-radius:15px;
+            padding:2rem;
+            margin-bottom:2rem;
+        }
+        .enunciado-section { border-left:4px solid #3498db; }
+        .alternativas-section { border-left:4px solid #f39c12; }
+        .filter-section { border-left:4px solid #9b59b6; }
+        .resposta-section { background:#f0f8ff; border-left:4px solid #3498db; }
+        .fonte-section { border-left:4px solid #27ae60; }
+        .imagem-section { border-left:4px solid #e74c3c; }
+
+        .form-actions {
+            display:flex;
+            gap:1rem;
+            justify-content:center;
+            margin-top:1.5rem;
+        }
+        .btn {
+            padding:1rem 2rem;
+            border:none;
+            border-radius:12px;
+            cursor:pointer;
+            font-weight:600;
+            text-decoration:none;
+            display:inline-block;
+            transition:all 0.3s;
+            font-size:1rem;
+        }
+        .btn-primary {
+            background:linear-gradient(135deg,#e74c3c,#c0392b);
+            color:#fff;
+        }
+        .btn-primary:hover:not(:disabled) {
+            transform:translateY(-2px);
+            box-shadow:0 5px 15px rgba(231,76,60,0.4);
+        }
+        .btn-primary:disabled {
+            opacity:0.6;
+            cursor:not-allowed;
+        }
+        .btn-secondary { background:#95a5a6; color:#fff; }
+        .btn-secondary:hover {
+            background:#7f8c8d;
+            transform:translateY(-2px);
+        }
+
+        .add-alternativa {
+            background:#27ae60;
+            color:white;
+            border-radius:10px;
+            padding:0.6rem 1rem;
+            cursor:pointer;
+            display:flex;
+            gap:0.5rem;
+            align-items:center;
+            border:none;
+            font-weight:600;
+            transition: all 0.3s;
+        }
+        .add-alternativa:hover {
+            background: #229954;
+            transform: translateY(-2px);
+        }
+
+        .alternativa-item {
+            display:grid;
+            grid-template-columns: auto 1fr auto auto;
+            align-items:center;
+            gap:1rem;
+            margin-bottom:1rem;
+            padding:1.2rem;
+            background:white;
+            border-radius:12px;
+            border: 2px solid #e1e8ed;
+            transition: all 0.3s;
+        }
+        .alternativa-item:hover {
+            border-color: #3498db;
+            box-shadow: 0 3px 10px rgba(52, 152, 219, 0.1);
+        }
+
+        .alternativa-letra {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .alternativa-input {
+            flex:1;
+            min-height: 50px;
+            padding: 0.8rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            resize: vertical;
+        }
+        .alternativa-input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .gabarito-radio{
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #27ae60;
+        }
+
+        .remove-alternativa-btn {
+            background:#e74c3c;
+            color:white;
+            border:none;
+            border-radius:8px;
+            padding:0.6rem 0.8rem;
+            cursor:pointer;
+            transition: all 0.3s;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .remove-alternativa-btn:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
+
+        .character-count {
+            font-size:0.8rem;
+            color:#7f8c8d;
+            float:right;
+            margin-top:0.5rem;
+        }
+
+        .success-message {
+            background:rgba(39,174,96,0.1);
+            color:#27ae60;
+            padding:1rem;
+            border-radius:10px;
+            margin-bottom:1.5rem;
+            border-left:4px solid #27ae60;
+            display:none;
+        }
+        .error-message {
+            background:rgba(231,76,60,0.1);
+            color:#e74c3c;
+            padding:1rem;
+            border-radius:10px;
+            margin-bottom:1.5rem;
+            border-left:4px solid #e74c3c;
+            display:none;
+        }
+
+        .upload-area {
+            border: 2px dashed #3498db;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .upload-area:hover {
+            border-color: #2980b9;
+            background: #ecf0f1;
+        }
+        .upload-area.dragover {
+            border-color: #27ae60;
+            background: rgba(39, 174, 96, 0.1);
+        }
+
+        .btn.loading::after {
+            content: "";
+            width: 16px;
+            height: 16px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            display: inline-block;
+            animation: spin 1s linear infinite;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width:768px) {
+            .form-row { grid-template-columns:1fr; }
+            .form-actions { flex-direction:column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-mini">
+            <a href="dashboard.html" class="back-btn">← Voltar ao Dashboard</a>
+            <a href="dashboard.html" class="logo">+Português</a>
+        </div>
+
+        <div class="success-message" id="successMessage"></div>
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="form-container">
+            <div class="form-header">
+                <h1>Criar Nova Questão</h1>
+                <p>Preencha os campos abaixo para criar uma questão personalizada</p>
+            </div>
+
+            <form id="questionForm">
+                <div class="form-row">
+                    <div class="form-group required">
+                        <label for="tipo-questao">Tipo de Questão</label>
+                        <select id="tipo-questao" name="tipo-questao" required>
+                            <option value="">Selecione...</option>
+                            <option value="fechada">Questão Objetiva</option>
+                            <option value="aberta">Questão Dissertativa</option>
+                        </select>
+                    </div>
+                    <div class="form-group required">
+                        <label for="titulo">Título da Questão</label>
+                        <input type="text" id="titulo" name="titulo" placeholder="Ex: Análise Sintática - Período Composto" required>
+                    </div>
+                </div>
+
+                <div class="enunciado-section">
+                    <h3>📝 Enunciado</h3>
+                    <div class="form-group required">
+                        <label for="enunciado">Texto do Enunciado</label>
+                        <textarea id="enunciado" name="enunciado" placeholder="Escreva aqui o enunciado da questão..." required maxlength="20000"></textarea>
+                        <div class="character-count"><span id="charCount">0</span>/20000 caracteres</div>
+                    </div>
+                </div>
+
+                <!-- Alternativas (fechada) -->
+                <div class="alternativas-section" id="alternativasSection" style="display:none;">
+                    <h3>📋 Alternativas</h3>
+                    <div id="alternativasContainer"></div>
+                    <button type="button" class="add-alternativa" id="btnAddAlternativa">+ Adicionar Alternativa</button>
+                </div>
+
+                <!-- Resposta (aberta) -->
+                <div class="resposta-section" id="respostaSection" style="display:none;">
+                    <h3>📝 Resposta Esperada</h3>
+                    <div class="form-group">
+                        <label for="resposta-esperada">Resposta ou Critérios de Avaliação</label>
+                        <textarea id="resposta-esperada" name="resposta-esperada" placeholder="Descreva a resposta esperada..." style="min-height:150px;"></textarea>
+                        <small style="color:#7f8c8d; display:block; margin-top:0.5rem;">
+                            Para questões abertas, descreva os pontos principais.
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Filtros e Categorias -->
+                <div class="filter-section">
+                    <h3>🏷️ Filtros e Categorias</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="filtro-principal">Categoria / Filtro Principal</label>
+                            <div style="display: flex; gap: 0.8rem; align-items: center; justify-content: center;">
+                                <select id="filtro-principal" name="filtro-principal" style="flex: 1;">
+                                    <option value="">Selecione uma categoria existente</option>
+                                </select>
+                                <button type="button" id="btnEditCategoria" class="btn" style="
+                                    background: linear-gradient(135deg, #3498db, #2980b9);
+                                    color: white;
+                                    padding: 1rem;
+                                    border: none;
+                                    border-radius: 12px;
+                                    cursor: pointer;
+                                    font-weight: 600;
+                                    white-space: nowrap;
+                                    transition: all 0.3s;
+                                " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(52, 152, 219, 0.4)'" onmouseout="this.style.transform='none'; this.style.boxShadow='none'">✏️ Editar</button>
+                            </div>
+                            <small style="font-size:0.8rem;color:#7f8c8d;">
+                                Você pode escolher uma categoria existente ou criar uma nova ao lado.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nova-categoria">Nova categoria (opcional)</label>
+                            <input
+                                type="text"
+                                id="nova-categoria"
+                                placeholder="Ex: Redação, Variação Linguística, Figuras de Linguagem..."
+                            >
+                            <small style="font-size:0.75rem;color:#7f8c8d;">
+                                Se preencher aqui, não precisa selecionar no campo ao lado.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dificuldade">Nível de Dificuldade</label>
+                            <select id="dificuldade" name="dificuldade">
+                                <option value="">Selecione...</option>
+                                <option value="facil">Fácil</option>
+                                <option value="medio">Médio</option>
+                                <option value="dificil">Difícil</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subgenero">Subgênero (opcional)</label>
+                        <div style="display: flex; gap: 0.8rem; align-items: center; justify-content: center;">
+                            <select id="subgenero" name="subgenero" style="flex: 1;">
+                                <option value="">Selecione um subgênero (opcional)</option>
+                                <option value="__criar__">➕ Criar novo subgênero</option>
+                            </select>
+                            <button type="button" id="btnEditSubgenero" class="btn" style="
+                                background: linear-gradient(135deg, #3498db, #2980b9);
+                                color: white;
+                                padding: 1rem;
+                                border: none;
+                                border-radius: 12px;
+                                cursor: pointer;
+                                font-weight: 600;
+                                white-space: nowrap;
+                                transition: all 0.3s;
+                            " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(52, 152, 219, 0.4)'" onmouseout="this.style.transform='none'; this.style.boxShadow='none'">✏️ Editar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fonte -->
+                <div class="fonte-section">
+                    <h3>🌐 Fonte da Questão (opcional)</h3>
+                    <div style="display:flex; align-items:center; gap:0.6rem;">
+                        <div style="flex:1;">
+                            <input type="text" id="fonte-nome" placeholder="Nome da fonte (ex: ENEM 2023)">
+                        </div>
+                        <div style="width:120px;">
+                            <input type="number" id="fonte-ano" placeholder="Ano" min="1900" max="2100">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Imagem -->
+                <div class="imagem-section">
+                    <h3>🖼️ Imagem da Questão (opcional)</h3>
+                    <div class="upload-area" id="uploadArea">
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">📤</div>
+                        <p style="color: #7f8c8d; margin-bottom: 0.5rem;">Clique ou arraste uma imagem aqui</p>
+                        <small style="color: #95a5a6;">Máx 3MB. Tipos: jpg, png, webp</small>
+                    </div>
+                    <input type="file" id="imagem-questao" accept="image/*" style="display: none;">
+
+                    <div id="imagemPreview" style="margin-top: 1.5rem; display: none;">
+                        <img id="imagemPreviewImg" src="" alt="Preview" style="max-width: 100%; border-radius: 8px; box-shadow: 0 3px 10px rgba(0,0,0,0.08);">
+                        <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                            <button type="button" id="removeImagemBtn" class="btn btn-secondary" style="flex: 1;">Remover Imagem</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='dashboard.html'">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Criar Questão</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<!-- Modal de Criar Subgênero -->
+<div class="modal" id="createSubgeneroModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 2000; align-items: center; justify-content: center;">
+    <div class="modal-content" style="background: white; border-radius: 15px; padding: 2rem; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); animation: slideDown 0.3s ease-out;">
+        <div class="modal-header" style="font-size: 1.5rem; font-weight: 600; color: #2c3e50; margin-bottom: 1rem;">Criar Novo Subgênero</div>
+        <div class="modal-body" style="margin-bottom: 1.5rem;">
+            <label style="display:block; margin-bottom:0.7rem; color:#34495e; font-weight:600; font-size:1rem;">Nome do Subgênero</label>
+            <input type="text" class="modal-input" id="createSubgeneroInput" placeholder="Ex: Sintaxe, Semântica, Morfologia..." style="width: 100%; padding: 1rem; border: 2px solid #e1e8ed; border-radius: 10px; font-size: 1rem; font-family: 'Poppins', sans-serif; transition: all 0.3s;">
+        </div>
+        <div class="modal-footer" style="display: flex; gap: 1rem; justify-content: flex-end;">
+            <button type="button" class="btn-modal btn-modal-secondary" onclick="closeCreateSubgeneroModal()" style="padding: 0.8rem 1.5rem; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-size: 0.9rem; background: #95a5a6; color: white;">Cancelar</button>
+            <button type="button" class="btn-modal btn-modal-primary" onclick="saveCreateSubgenero()" style="padding: 0.8rem 1.5rem; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-size: 0.9rem; background: linear-gradient(135deg, #27ae60, #229954); color: white;">Criar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Editar Subgênero -->
+<div class="modal" id="editSubgeneroModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 2000; align-items: center; justify-content: center;">
+    <div class="modal-content" style="background: white; border-radius: 15px; padding: 2rem; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); animation: slideDown 0.3s ease-out;">
+        <div class="modal-header" style="font-size: 1.5rem; font-weight: 600; color: #2c3e50; margin-bottom: 1rem;">Editar Subgênero</div>
+        <div class="modal-body" style="margin-bottom: 1.5rem;">
+            <label style="display:block; margin-bottom:0.7rem; color:#34495e; font-weight:600; font-size:1rem;">Novo Nome do Subgênero</label>
+            <input type="text" class="modal-input" id="editSubgeneroInput" placeholder="Digite o novo nome..." style="width: 100%; padding: 1rem; border: 2px solid #e1e8ed; border-radius: 10px; font-size: 1rem; font-family: 'Poppins', sans-serif; transition: all 0.3s;">
+        </div>
+        <div class="modal-footer" style="display: flex; gap: 1rem; justify-content: flex-end;">
+            <button type="button" class="btn-modal btn-modal-secondary" onclick="closeEditSubgeneroModal()" style="padding: 0.8rem 1.5rem; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-size: 0.9rem; background: #95a5a6; color: white;">Cancelar</button>
+            <button type="button" class="btn-modal btn-modal-primary" onclick="saveEditSubgenero()" style="padding: 0.8rem 1.5rem; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-size: 0.9rem; background: linear-gradient(135deg, #27ae60, #229954); color: white;">Salvar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Editar Categoria -->
+<div class="modal" id="editCategoriaModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 2000; align-items: center; justify-content: center;">
+    <div class="modal-content" style="background: white; border-radius: 15px; padding: 2rem; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); animation: slideDown 0.3s ease-out;">
+        <div class="modal-header" style="font-size: 1.5rem; font-weight: 600; color: #2c3e50; margin-bottom: 1rem;">Editar Categoria</div>
+        <div class="modal-body" style="margin-bottom: 1.5rem;">
+            <label style="display:block; margin-bottom:0.7rem; color:#34495e; font-weight:600; font-size:1rem;">Novo Nome da Categoria</label>
+            <input type="text" class="modal-input" id="editCategoriaInput" placeholder="Digite o novo nome..." style="width: 100%; padding: 1rem; border: 2px solid #e1e8ed; border-radius: 10px; font-size: 1rem; font-family: 'Poppins', sans-serif; transition: all 0.3s;">
+        </div>
+        <div class="modal-footer" style="display: flex; gap: 1rem; justify-content: flex-end;">
+            <button type="button" class="btn-modal btn-modal-secondary" onclick="closeEditCategoriaModal()" style="padding: 0.8rem 1.5rem; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-size: 0.9rem; background: #95a5a6; color: white;">Cancelar</button>
+            <button type="button" class="btn-modal btn-modal-primary" onclick="saveEditCategoria()" style="padding: 0.8rem 1.5rem; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-size: 0.9rem; background: linear-gradient(135deg, #27ae60, #229954); color: white;">Salvar</button>
+        </div>
+    </div>
+</div>
+
+       <script>
+let imageUrl = null;
+const API_BASE = "http://127.0.0.1:8000";
+
+document.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        alert("⚠️ Faça login primeiro.");
+        window.location.href = "login.html";
+        return;
+    }
+
+    // ===== ELEMENTOS =====
+    const tipoSelect = document.getElementById("tipo-questao");
+    const alternativasSection = document.getElementById("alternativasSection");
+    const respostaSection = document.getElementById("respostaSection");
+    const alternativasContainer = document.getElementById("alternativasContainer");
+    const btnAddAlt = document.getElementById("btnAddAlternativa");
+    const charCount = document.getElementById("charCount");
+    const enunciado = document.getElementById("enunciado");
+    const form = document.getElementById("questionForm");
+    const successMessage = document.getElementById("successMessage");
+    const errorMessage = document.getElementById("errorMessage");
+    const filtroSelect = document.getElementById("filtro-principal");
+    const novaCategoriaInput = document.getElementById("nova-categoria");
+    const btnEditCategoria = document.getElementById("btnEditCategoria");
+    const btnEditSubgenero = document.getElementById("btnEditSubgenero");
+    const subgeneroSelect = document.getElementById("subgenero");
+
+    const defaultCategories = [
+        "Analise Linguistica",
+        "Literatura",
+        "Interpretacao Texto"
+    ];
+
+    let currentEditingCategoria = "";
+    let currentEditingSubgenero = "";
+
+    function getParam(name) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(name);
+    }
+
+    // ===== UPLOAD IMAGEM =====
+    const uploadArea = document.getElementById("uploadArea");
+    const inputFile = document.getElementById("imagem-questao");
+    const preview = document.getElementById("imagemPreview");
+    const previewImg = document.getElementById("imagemPreviewImg");
+    const removeBtn = document.getElementById("removeImagemBtn");
+
+    uploadArea.addEventListener("click", (e) => {
+        e.preventDefault();
+        inputFile.click();
+    });
+
+    uploadArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadArea.classList.add("dragover");
+    });
+
+    uploadArea.addEventListener("dragleave", (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove("dragover");
+    });
+
+    uploadArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove("dragover");
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            inputFile.files = files;
+            handleImageUpload();
+        }
+    });
+
+    inputFile.addEventListener("change", handleImageUpload);
+
+    async function handleImageUpload() {
+        const file = inputFile.files[0];
+        if (!file) return;
+
+        successMessage.style.display = "none";
+        errorMessage.style.display = "none";
+
+        if (!file.type.startsWith("image/")) {
+            errorMessage.textContent = "❌ Arquivo deve ser uma imagem";
+            errorMessage.style.display = "block";
+            inputFile.value = "";
+            return;
+        }
+
+        if (file.size > 3 * 1024 * 1024) {
+            errorMessage.textContent = "❌ Imagem muito grande. Máximo 3MB.";
+            errorMessage.style.display = "block";
+            inputFile.value = "";
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewImg.src = e.target.result;
+            preview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            uploadArea.style.opacity = "0.6";
+            uploadArea.style.pointerEvents = "none";
+
+            const resp = await fetch(`${API_BASE}/questions/upload-image`, {
+                method: "POST",
+                headers: { "Authorization": "Bearer " + token },
+                body: formData
+            });
+
+            const data = await resp.json().catch(() => ({}));
+
+            if (!resp.ok) {
+                throw new Error(data.detail || "Erro ao fazer upload da imagem");
+            }
+
+            imageUrl = data.url;
+            successMessage.textContent = "✅ Imagem enviada com sucesso!";
+            successMessage.style.display = "block";
+        } catch (err) {
+            console.error(err);
+            errorMessage.textContent = "❌ Erro ao fazer upload: " + err.message;
+            errorMessage.style.display = "block";
+            preview.style.display = "none";
+            imageUrl = null;
+        } finally {
+            uploadArea.style.opacity = "1";
+            uploadArea.style.pointerEvents = "auto";
+        }
+    }
+
+    removeBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        imageUrl = null;
+        preview.style.display = "none";
+        inputFile.value = "";
+    });
+
+    // ===== CATEGORIAS DINÂMICAS =====
+    async function loadCategories() {
+        filtroSelect.innerHTML = '<option value="">Selecione uma categoria existente</option>';
+
+        defaultCategories.forEach(cat => {
+            const opt = document.createElement("option");
+            opt.value = cat;
+            opt.textContent = cat;
+            filtroSelect.appendChild(opt);
+        });
+
+        try {
+            const resp = await fetch(`${API_BASE}/questions/categories`, {
+                headers: { "Authorization": "Bearer " + token }
+            });
+
+            if (resp.ok) {
+                const categorias = await resp.json();
+                categorias.forEach((cat) => {
+                    if (cat && !Array.from(filtroSelect.options).some(o => o.value === cat)) {
+                        const opt = document.createElement("option");
+                        opt.value = cat;
+                        opt.textContent = cat;
+                        filtroSelect.appendChild(opt);
+                    }
+                });
+            }
+        } catch (err) {
+            console.error("Erro ao carregar categorias:", err);
+        }
+
+        const novaFromUrl = getParam("nova_categoria");
+        if (novaFromUrl) novaCategoriaInput.value = novaFromUrl;
+    }
+
+    loadCategories();
+
+    // ===== SUBGÊNEROS =====
+    async function loadSubgeneros() {
+        try {
+            const resp = await fetch(`${API_BASE}/questions/subgeneros`, {
+                headers: { "Authorization": "Bearer " + token }
+            });
+
+            if (resp.ok) {
+                const subgeneros = await resp.json();
+                const currentValue = subgeneroSelect.value;
+
+                subgeneroSelect.innerHTML = `
+                    <option value="">Selecione um subgênero (opcional)</option>
+                    <option value="__criar__">➕ Criar novo subgênero</option>
+                `;
+
+                subgeneros.forEach(sg => {
+                    if (sg && sg !== "__criar__") {
+                        const opt = document.createElement("option");
+                        opt.value = sg;
+                        opt.textContent = sg;
+                        subgeneroSelect.appendChild(opt);
+                    }
+                });
+
+                if (currentValue && currentValue !== "__criar__") {
+                    subgeneroSelect.value = currentValue;
+                }
+            }
+        } catch (err) {
+            console.error("Erro ao carregar subgêneros:", err);
+        }
+    }
+
+    loadSubgeneros();
+
+    subgeneroSelect.addEventListener("change", async (e) => {
+        if (e.target.value === "__criar__") {
+            document.getElementById("createSubgeneroInput").value = "";
+            document.getElementById("createSubgeneroModal").style.display = "flex";
+            document.getElementById("createSubgeneroInput").focus();
+            e.target.value = "";
+        }
+    });
+
+    function closeCreateSubgeneroModal() {
+        document.getElementById("createSubgeneroModal").style.display = "none";
+        subgeneroSelect.value = "";
+    }
+
+    async function saveCreateSubgenero() {
+        const newName = document.getElementById("createSubgeneroInput").value.trim();
+        
+        if (!newName) {
+            alert("❌ O nome do subgênero não pode estar vazio.");
+            return;
+        }
+
+        const createBtn = document.querySelector("#createSubgeneroModal .btn-modal-primary");
+        const originalText = createBtn.textContent;
+        createBtn.disabled = true;
+        createBtn.textContent = "Criando...";
+
+        try {
+            const resp = await fetch(`${API_BASE}/questions/create-subgenero`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify({ name: newName })
+            });
+
+            const data = await resp.json().catch(() => ({}));
+
+            if (!resp.ok) throw new Error(data.detail || "Erro ao criar subgênero");
+
+            alert("✅ Subgênero criado com sucesso!");
+            closeCreateSubgeneroModal();
+            await loadSubgeneros();
+            subgeneroSelect.value = newName;
+        } catch (err) {
+            alert("❌ Erro: " + err.message);
+        } finally {
+            createBtn.disabled = false;
+            createBtn.textContent = originalText;
+        }
+    }
+
+    btnEditSubgenero.addEventListener("click", (e) => {
+        e.preventDefault();
+        const selected = subgeneroSelect.value;
+
+        if (!selected) {
+            alert("⚠️ Selecione um subgênero para editar.");
+            return;
+        }
+
+        currentEditingSubgenero = selected;
+        document.getElementById("editSubgeneroInput").value = selected;
+        document.getElementById("editSubgeneroModal").style.display = "flex";
+        document.getElementById("editSubgeneroInput").focus();
+    });
+
+    function closeEditSubgeneroModal() {
+        document.getElementById("editSubgeneroModal").style.display = "none";
+        currentEditingSubgenero = "";
+    }
+
+    async function saveEditSubgenero() {
+        const newName = document.getElementById("editSubgeneroInput").value.trim();
+        
+        if (!newName) {
+            alert("❌ O nome não pode estar vazio.");
+            return;
+        }
+
+        if (newName === currentEditingSubgenero) {
+            closeEditSubgeneroModal();
+            return;
+        }
+
+        const saveBtn = document.querySelector("#editSubgeneroModal .btn-modal-primary");
+        const originalText = saveBtn.textContent;
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Salvando...";
+
+        try {
+            const resp = await fetch(`${API_BASE}/questions/rename-subgenero`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify({
+                    old_name: currentEditingSubgenero,
+                    new_name: newName
+                })
+            });
+
+            const data = await resp.json().catch(() => ({}));
+
+            if (!resp.ok) throw new Error(data.detail || "Erro ao renomear");
+
+            alert("✅ Subgênero renomeado com sucesso!");
+            closeEditSubgeneroModal();
+            await loadSubgeneros();
+            subgeneroSelect.value = newName;
+        } catch (err) {
+            alert("❌ Erro: " + err.message);
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.textContent = originalText;
+        }
+    }
+
+    // ===== CATEGORIA EDITAR =====
+    btnEditCategoria.addEventListener("click", (e) => {
+        e.preventDefault();
+        const selected = filtroSelect.value;
+
+        if (!selected) {
+            alert("⚠️ Selecione uma categoria para editar.");
+            return;
+        }
+
+        currentEditingCategoria = selected;
+        document.getElementById("editCategoriaInput").value = selected;
+        document.getElementById("editCategoriaModal").style.display = "flex";
+        document.getElementById("editCategoriaInput").focus();
+    });
+
+    function closeEditCategoriaModal() {
+        document.getElementById("editCategoriaModal").style.display = "none";
+        currentEditingCategoria = "";
+    }
+
+    async function saveEditCategoria() {
+        const newName = document.getElementById("editCategoriaInput").value.trim();
+        
+        if (!newName) {
+            alert("❌ O nome não pode estar vazio.");
+            return;
+        }
+
+        if (newName === currentEditingCategoria) {
+            closeEditCategoriaModal();
+            return;
+        }
+
+        const saveBtn = document.querySelector("#editCategoriaModal .btn-modal-primary");
+        const originalText = saveBtn.textContent;
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Salvando...";
+
+        try {
+            const resp = await fetch(`${API_BASE}/questions/rename-category`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify({
+                    old_name: currentEditingCategoria,
+                    new_name: newName
+                })
+            });
+
+            const data = await resp.json().catch(() => ({}));
+
+            if (!resp.ok) throw new Error(data.detail || "Erro ao renomear");
+
+            alert("✅ Categoria renomeada com sucesso!");
+            closeEditCategoriaModal();
+            await loadCategories();
+            filtroSelect.value = newName;
+        } catch (err) {
+            alert("❌ Erro: " + err.message);
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.textContent = originalText;
+        }
+    }
+
+    // ===== MODAL CONTROLS =====
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            closeCreateSubgeneroModal();
+            closeEditSubgeneroModal();
+            closeEditCategoriaModal();
+        }
+    });
+
+    document.addEventListener("click", (e) => {
+        if (e.target === document.getElementById("createSubgeneroModal")) closeCreateSubgeneroModal();
+        if (e.target === document.getElementById("editSubgeneroModal")) closeEditSubgeneroModal();
+        if (e.target === document.getElementById("editCategoriaModal")) closeEditCategoriaModal();
+    });
+
+    document.getElementById("createSubgeneroInput").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") saveCreateSubgenero();
+    });
+
+    document.getElementById("editSubgeneroInput").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") saveEditSubgenero();
+    });
+
+    document.getElementById("editCategoriaInput").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") saveEditCategoria();
+    });
+
+    // ===== ALTERNATIVAS =====
+    function criarAlternativaItem(letter = "") {
+        const wrapper = document.createElement("div");
+        wrapper.className = "alternativa-item";
+
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = "gabarito";
+        radio.className = "gabarito-radio";
+        radio.value = letter;
+
+        const textarea = document.createElement("textarea");
+        textarea.placeholder = letter ? `Alternativa ${letter}` : "Alternativa";
+        textarea.className = "alternativa-input";
+        textarea.style.minHeight = "60px";
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "remove-alternativa-btn";
+        remove.textContent = "🗑️";
+        remove.addEventListener("click", () => {
+            wrapper.remove();
+            relabelAlternativas();
+        });
+
+        wrapper.appendChild(radio);
+        wrapper.appendChild(textarea);
+        wrapper.appendChild(remove);
+        return wrapper;
+    }
+
+    function relabelAlternativas() {
+        const items = Array.from(alternativasContainer.querySelectorAll(".alternativa-item"));
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        items.forEach((item, idx) => {
+            const radio = item.querySelector('input[type="radio"]');
+            const textarea = item.querySelector("textarea");
+            const letter = letters[idx] || (idx + 1).toString();
+            radio.value = letter;
+            textarea.placeholder = `Alternativa ${letter}`;
+        });
+    }
+
+    function initAlternativas() {
+        alternativasContainer.innerHTML = "";
+        ["A", "B", "C", "D"].forEach((l) => {
+            alternativasContainer.appendChild(criarAlternativaItem(l));
+        });
+    }
+
+    initAlternativas();
+
+    btnAddAlt.addEventListener("click", (e) => {
+        e.preventDefault();
+        alternativasContainer.appendChild(criarAlternativaItem());
+        relabelAlternativas();
+    });
+
+    // ===== TIPO QUESTÃO =====
+    tipoSelect.addEventListener("change", () => {
+        const tipo = tipoSelect.value;
+        if (tipo === "fechada") {
+            alternativasSection.style.display = "block";
+            respostaSection.style.display = "none";
+            initAlternativas();
+        } else if (tipo === "aberta") {
+            alternativasSection.style.display = "none";
+            respostaSection.style.display = "block";
+            alternativasContainer.innerHTML = "";
+        } else {
+            alternativasSection.style.display = "none";
+            respostaSection.style.display = "none";
+            alternativasContainer.innerHTML = "";
+        }
+    });
+
+    // ===== CONTADOR ENUNCIADO =====
+    enunciado.addEventListener("input", () => {
+        charCount.textContent = enunciado.value.length;
+    });
+
+    // ===== SUBMIT QUESTÃO =====
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        successMessage.style.display = "none";
+        errorMessage.style.display = "none";
+
+        const tipo = tipoSelect.value;
+        const titulo = document.getElementById("titulo").value.trim();
+        const enun = enunciado.value.trim();
+        const dificuldade = document.getElementById("dificuldade").value;
+        const subgenero = document.getElementById("subgenero").value;
+        const fonteNome = document.getElementById("fonte-nome").value.trim();
+        const fonteAno = document.getElementById("fonte-ano").value;
+        const respostaEsperada = document.getElementById("resposta-esperada")?.value.trim();
+
+        const selectedCategoria = filtroSelect.value.trim();
+        const novaCategoria = novaCategoriaInput.value.trim();
+        const filtroPrincipal = novaCategoria || selectedCategoria;
+
+        if (!tipo) return showError("Selecione o tipo de questão.");
+        if (!titulo) return showError("Preencha o título.");
+        if (!enun) return showError("Preencha o enunciado.");
+        if (!filtroPrincipal) return showError("Selecione ou crie uma categoria.");
+
+        const payload = {
+            tipo,
+            titulo,
+            enunciado: enun,
+            filtro_principal: filtroPrincipal
+        };
+
+        if (dificuldade) payload.dificuldade = dificuldade;
+        if (subgenero) payload.subgenero = subgenero;
+        if (fonteNome) payload.fonte_nome = fonteNome;
+        if (fonteAno) payload.fonte_ano = Number(fonteAno);
+        if (imageUrl) payload.image_url = imageUrl;
+
+        if (tipo === "fechada") {
+            const items = Array.from(alternativasContainer.querySelectorAll(".alternativa-item"));
+            const alternativas = items
+                .map(it => it.querySelector("textarea").value.trim())
+                .filter(v => v);
+
+            const gabaritoRadio = alternativasContainer.querySelector('input[name="gabarito"]:checked');
+
+            if (alternativas.length < 2) return showError("Insira pelo menos 2 alternativas.");
+            if (!gabaritoRadio) return showError("Selecione o gabarito.");
+
+            payload.alternativas = alternativas;
+            payload.gabarito = gabaritoRadio.value;
+        } else if (tipo === "aberta" && respostaEsperada) {
+            payload.resposta_esperada = respostaEsperada;
+        }
+
+        const submitBtn = document.getElementById("submitBtn");
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.classList.add("loading");
+        submitBtn.textContent = "Criando";
+
+        try {
+            const resp = await fetch(`${API_BASE}/questions/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await resp.json().catch(() => ({}));
+            if (!resp.ok) {
+                throw new Error(data.detail || "Erro ao criar questão");
+            }
+
+            successMessage.textContent = "✅ Questão criada com sucesso!";
+            successMessage.style.display = "block";
+
+            setTimeout(() => {
+                window.location.href = "dashboard.html";
+            }, 1200);
+        } catch (err) {
+            console.error(err);
+            showError(err.message);
+            submitBtn.disabled = false;
+            submitBtn.classList.remove("loading");
+            submitBtn.textContent = originalText;
+        }
+    });
+
+    function showError(msg) {
+        errorMessage.textContent = "❌ " + msg;
+        errorMessage.style.display = "block";
+    }
+});
+</script>
+           if (!resp.ok) {
+                throw new Error(data.detail || "Erro ao criar questão");
+            }
+
+            successMessage.textContent = "✅ Questão criada com sucesso!";
+            successMessage.style.display = "block";
+
+            setTimeout(() => {
+                window.location.href = "dashboard.html";
+
+
+</body>
+</html>

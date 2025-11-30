@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Editar Questão - +Português</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family:'Poppins',sans-serif;
+            line-height:1.6;
+            color:#2c3e50;
+            background: linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%);
+            min-height:100vh;
+            padding:2rem 0;
+        }
+        .container { max-width:900px; margin:0 auto; padding:0 20px; }
+
+        .header-mini {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            margin-bottom:2rem;
+            background:white;
+            padding:1rem 2rem;
+            border-radius:15px;
+            box-shadow:0 5px 15px rgba(0,0,0,0.1);
+        }
+        .back-btn {
+            color:#3498db;
+            text-decoration:none;
+            font-weight:500;
+            padding:0.5rem 1rem;
+            border-radius:25px;
+            display:flex;
+            align-items:center;
+            gap:0.5rem;
+        }
+        .back-btn:hover { background: rgba(52, 152, 219, 0.1); }
+        .logo {
+            font-size:1.8rem;
+            font-weight:700;
+            color:#e74c3c;
+            text-decoration:none;
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+        .logo::before { content:"📚"; font-size:1.5rem; }
+
+        .form-container {
+            background:white;
+            border-radius:20px;
+            padding:2.5rem;
+            box-shadow:0 15px 35px rgba(0,0,0,0.1);
+            position:relative;
+            overflow:hidden;
+        }
+        .form-container::before {
+            content:"";
+            position:absolute;
+            top:0;
+            left:0;
+            right:0;
+            height:4px;
+            background:linear-gradient(90deg,#f39c12,#e67e22);
+        }
+
+        .form-header { text-align:center; margin-bottom:2.5rem; }
+        .form-header h1 {
+            font-size:2.2rem;
+            font-weight:700;
+            color:#2c3e50;
+            margin-bottom:0.5rem;
+        }
+
+        .form-row {
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:1.5rem;
+        }
+        .form-group { margin-bottom:1.5rem; }
+        label {
+            display:block;
+            margin-bottom:0.7rem;
+            color:#34495e;
+            font-weight:600;
+            font-size:1rem;
+        }
+        input, select, textarea {
+            width:100%;
+            padding:1rem;
+            border:2px solid #e1e8ed;
+            border-radius:12px;
+            font-size:1rem;
+            background:#fafbfc;
+            font-family:'Poppins',sans-serif;
+            transition:all 0.3s;
+        }
+        textarea { min-height:120px; resize:vertical; }
+        input:focus, select:focus, textarea:focus {
+            outline:none;
+            border-color:#3498db;
+            box-shadow:0 0 0 3px rgba(52,152,219,0.1);
+            background:white;
+            transform:translateY(-1px);
+        }
+
+        .enunciado-section, .alternativas-section, .filter-section, .resposta-section, .fonte-section, .imagem-section {
+            background:#f8f9fa;
+            border-radius:15px;
+            padding:2rem;
+            margin-bottom:2rem;
+        }
+        .enunciado-section { border-left:4px solid #3498db; }
+        .alternativas-section { border-left:4px solid #f39c12; }
+        .filter-section { border-left:4px solid #9b59b6; }
+        .resposta-section { background:#f0f8ff; border-left:4px solid #3498db; }
+        .fonte-section { border-left:4px solid #27ae60; }
+        .imagem-section { border-left:4px solid #e74c3c; }
+
+        .form-actions {
+            display:flex;
+            gap:1rem;
+            justify-content:center;
+            margin-top:1.5rem;
+        }
+        .btn {
+            padding:1rem 2rem;
+            border:none;
+            border-radius:12px;
+            cursor:pointer;
+            font-weight:600;
+            text-decoration:none;
+            display:inline-block;
+            transition:all 0.3s;
+            font-size:1rem;
+        }
+        .btn-primary {
+            background:linear-gradient(135deg,#f39c12,#e67e22);
+            color:#fff;
+        }
+        .btn-primary:hover:not(:disabled) {
+            transform:translateY(-2px);
+            box-shadow:0 5px 15px rgba(243,156,18,0.4);
+        }
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .btn-secondary { background:#95a5a6; color:#fff; }
+        .btn-secondary:hover {
+            background:#7f8c8d;
+            transform:translateY(-2px);
+        }
+
+        .add-alternativa {
+            background:#27ae60;
+            color:white;
+            border-radius:10px;
+            padding:0.6rem 1rem;
+            cursor:pointer;
+            display:flex;
+            gap:0.5rem;
+            align-items:center;
+            border:none;
+            font-weight:600;
+            transition: all 0.3s;
+        }
+        .add-alternativa:hover {
+            background: #229954;
+            transform: translateY(-2px);
+        }
+
+        .alternativa-item {
+            display:grid;
+            grid-template-columns: 50px 1fr auto auto;
+            align-items:center;
+            gap:1rem;
+            margin-bottom:1rem;
+            padding:1.2rem;
+            background:white;
+            border-radius:12px;
+            border: 2px solid #e1e8ed;
+            transition: all 0.3s;
+        }
+        .alternativa-item:hover {
+            border-color: #3498db;
+            box-shadow: 0 3px 10px rgba(52, 152, 219, 0.1);
+        }
+
+        .alternativa-letra {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .alternativa-input {
+            flex:1;
+            min-height: 50px;
+            padding: 0.8rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            resize: vertical;
+        }
+
+        .gabarito-radio {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #27ae60;
+        }
+
+        .remove-alternativa-btn {
+            background:#e74c3c;
+            color:white;
+            border:none;
+            border-radius:8px;
+            padding:0.6rem 0.8rem;
+            cursor:pointer;
+            transition: all 0.3s;
+            font-size: 1.2rem;
+        }
+        .remove-alternativa-btn:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
+
+        .character-count {
+            font-size:0.8rem;
+            color:#7f8c8d;
+            float:right;
+            margin-top:0.5rem;
+        }
+
+        .success-message {
+            background:rgba(39,174,96,0.1);
+            color:#27ae60;
+            padding:1rem;
+            border-radius:10px;
+            margin-bottom:1.5rem;
+            border-left:4px solid #27ae60;
+            display:none;
+        }
+        .error-message {
+            background:rgba(231,76,60,0.1);
+            color:#e74c3c;
+            padding:1rem;
+            border-radius:10px;
+            margin-bottom:1.5rem;
+            border-left:4px solid #e74c3c;
+            display:none;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            font-size: 1.2rem;
+            color: #7f8c8d;
+        }
+
+        .upload-area {
+            border: 2px dashed #3498db;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .upload-area:hover {
+            border-color: #2980b9;
+            background: #ecf0f1;
+        }
+        .upload-area.dragover {
+            border-color: #27ae60;
+            background: rgba(39, 174, 96, 0.1);
+        }
+
+        .btn.loading::after {
+            content: "";
+            width: 16px;
+            height: 16px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            display: inline-block;
+            animation: spin 1s linear infinite;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width:768px) {
+            .form-row { grid-template-columns:1fr; }
+            .form-actions { flex-direction:column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        Carregando questão...
+    </div>
+
+    <div class="container">
+        <div class="header-mini">
+            <a href="questions.html" class="back-btn">← Voltar às Questões</a>
+            <a href="dashboard.html" class="logo">+Português</a>
+        </div>
+
+        <div class="success-message" id="successMessage"></div>
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="form-container">
+            <div class="form-header">
+                <h1>✏️ Editar Questão</h1>
+                <p>Modifique os campos desejados e salve as alterações</p>
+            </div>
+
+            <form id="questionForm">
+                <div class="form-row">
+                    <div class="form-group required">
+                        <label for="tipo-questao">Tipo de Questão</label>
+                        <select id="tipo-questao" name="tipo-questao" required>
+                            <option value="">Selecione...</option>
+                            <option value="fechada">Questão Objetiva</option>
+                            <option value="aberta">Questão Dissertativa</option>
+                        </select>
+                    </div>
+                    <div class="form-group required">
+                        <label for="titulo">Título da Questão</label>
+                        <input type="text" id="titulo" name="titulo" placeholder="Ex: Análise Sintática - Período Composto" required>
+                    </div>
+                </div>
+
+                <div class="enunciado-section">
+                    <h3>📝 Enunciado</h3>
+                    <div class="form-group required">
+                        <label for="enunciado">Texto do Enunciado</label>
+                        <textarea id="enunciado" name="enunciado" placeholder="Escreva aqui o enunciado da questão..." required maxlength="20000"></textarea>
+                        <div class="character-count"><span id="charCount">0</span>/20000 caracteres</div>
+                    </div>
+                </div>
+
+                <div class="alternativas-section" id="alternativasSection" style="display:none;">
+                    <h3>📋 Alternativas</h3>
+                    <div id="alternativasContainer"></div>
+                    <button type="button" class="add-alternativa" id="btnAddAlternativa">+ Adicionar Alternativa</button>
+                </div>
+
+                <div class="resposta-section" id="respostaSection" style="display:none;">
+                    <h3>📝 Resposta Esperada</h3>
+                    <div class="form-group">
+                        <label for="resposta-esperada">Resposta ou Critérios de Avaliação</label>
+                        <textarea id="resposta-esperada" name="resposta-esperada" placeholder="Descreva a resposta esperada..." style="min-height:150px;"></textarea>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h3>🏷️ Filtros e Categorias</h3>
+                    <div class="form-row">
+                        <div class="form-group required">
+                            <label for="filtro-principal">Categoria / Filtro Principal</label>
+                            <select id="filtro-principal" name="filtro-principal" required>
+                                <option value="">Selecione uma categoria existente</option>
+                            </select>
+                            <small style="font-size:0.8rem;color:#7f8c8d;">
+                                Ou crie uma nova categoria abaixo.
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label for="dificuldade">Nível de Dificuldade</label>
+                            <select id="dificuldade" name="dificuldade">
+                                <option value="">Selecione...</option>
+                                <option value="facil">Fácil</option>
+                                <option value="medio">Médio</option>
+                                <option value="dificil">Difícil</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nova-categoria">Nova categoria (opcional)</label>
+                        <input type="text" id="nova-categoria" placeholder="Ex: Redação, Figuras de Linguagem, Variação Linguística...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subgenero">Subgênero (opcional)</label>
+                        <select id="subgenero" name="subgenero">
+                            <option value="">Selecione um subgênero (opcional)</option>
+                            <option value="sintaxe">Sintaxe</option>
+                            <option value="semantica">Semântica</option>
+                            <option value="morfologia">Morfologia</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="fonte-section">
+                    <h3>🌐 Fonte da Questão</h3>
+                    <div style="display:flex; align-items:center; gap:0.6rem;">
+                        <div style="flex:1;">
+                            <input type="text" id="fonte-nome" placeholder="Nome da fonte (ex: ENEM 2023)">
+                        </div>
+                        <div style="width:120px;">
+                            <input type="number" id="fonte-ano" placeholder="Ano" min="1900" max="2100">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="imagem-section">
+                    <h3>🖼️ Imagem da Questão</h3>
+                    <div class="upload-area" id="uploadArea">
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">📤</div>
+                        <p style="color: #7f8c8d; margin-bottom: 0.5rem;">Clique ou arraste uma imagem aqui</p>
+                        <small style="color: #95a5a6;">Máx 3MB. Tipos: jpg, png, webp</small>
+                    </div>
+                    <input type="file" id="imagem-questao" accept="image/*" style="display: none;">
+
+                    <div id="imagemPreview" style="margin-top: 1.5rem; display: none;">
+                        <img id="imagemPreviewImg" src="" alt="Preview" style="max-width: 100%; border-radius: 8px; box-shadow: 0 3px 10px rgba(0,0,0,0.08);">
+                        <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                            <button type="button" id="removeImagemBtn" class="btn btn-secondary" style="flex: 1;">Remover Imagem</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='questions.html'">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<script>
+const API_BASE = "http://127.0.0.1:8000";
+
+let questionId = null;
+let imageUrl = null;
+let imageRemoved = false;
+
+document.addEventListener("DOMContentLoaded", async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    questionId = urlParams.get('id');
+
+    if (!questionId) {
+        alert("❌ ID da questão não encontrado!");
+        window.location.href = 'questions.html';
+        return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+        alert("⚠️ Faça login primeiro.");
+        window.location.href = "login.html";
+        return;
+    }
+
+    try {
+        await loadCategories(token);      // carrega categorias dinâmicas (com auth)
+        await loadQuestionData(token);    // carrega dados da questão (com auth)
+        setupEventListeners();            // configura eventos
+    } finally {
+        document.getElementById('loadingOverlay').style.display = 'none';
+    }
+});
+
+// ===== CATEGORIAS DINÂMICAS =====
+async function loadCategories(token) {
+    const filtroSelect = document.getElementById("filtro-principal");
+    if (!filtroSelect) return;
+
+    filtroSelect.innerHTML = '<option value="">Selecione uma categoria existente</option>';
+
+    try {
+        const resp = await fetch(`${API_BASE}/questions/categories`, {
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        });
+        if (!resp.ok) return;
+
+        const categorias = await resp.json();
+        categorias.forEach((cat) => {
+            const opt = document.createElement("option");
+            opt.value = cat;
+            opt.textContent = cat;
+            filtroSelect.appendChild(opt);
+        });
+    } catch (err) {
+        console.error("Erro ao carregar categorias:", err);
+    }
+}
+
+// ===== CARREGA QUESTÃO =====
+async function loadQuestionData(token) {
+    try {
+        const resp = await fetch(`${API_BASE}/questions/${questionId}`, {
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        });
+
+        if (!resp.ok) {
+            if (resp.status === 404) {
+                throw new Error('Questão não encontrada ou não pertence a este usuário');
+            }
+            throw new Error('Erro ao carregar questão');
+        }
+
+        const question = await resp.json();
+        fillFormWithData(question);
+    } catch (err) {
+        console.error(err);
+        alert('❌ ' + err.message);
+        window.location.href = 'questions.html';
+    }
+}
+
+function fillFormWithData(q) {
+    const tipoSelect = document.getElementById('tipo-questao');
+    const filtroSelect = document.getElementById('filtro-principal');
+    const novaCategoriaInput = document.getElementById('nova-categoria');
+
+    document.getElementById('titulo').value = q.titulo || "";
+    document.getElementById('enunciado').value = q.enunciado || "";
+    document.getElementById('charCount').textContent = (q.enunciado || "").length;
+
+    tipoSelect.value = q.tipo;
+
+    // Categoria
+    if (q.filtro_principal) {
+        const exists = Array.from(filtroSelect.options).some(o => o.value === q.filtro_principal);
+        if (exists) {
+            filtroSelect.value = q.filtro_principal;
+        } else if (novaCategoriaInput) {
+            novaCategoriaInput.value = q.filtro_principal;
+        }
+    }
+
+    if (q.dificuldade) document.getElementById('dificuldade').value = q.dificuldade;
+    if (q.subgenero) document.getElementById('subgenero').value = q.subgenero;
+    if (q.fonte_nome) document.getElementById('fonte-nome').value = q.fonte_nome;
+    if (q.fonte_ano) document.getElementById('fonte-ano').value = q.fonte_ano;
+
+    // Imagem existente
+    if (q.image_url) {
+        imageUrl = q.image_url;
+        imageRemoved = false;
+        const preview = document.getElementById('imagemPreview');
+        const previewImg = document.getElementById('imagemPreviewImg');
+        previewImg.src = q.image_url;
+        preview.style.display = 'block';
+    }
+
+    // Tipo fechada: alternativas
+    if (q.tipo === 'fechada' && q.alternativas) {
+        const alternativasSection = document.getElementById('alternativasSection');
+        const container = document.getElementById('alternativasContainer');
+        alternativasSection.style.display = 'block';
+        container.innerHTML = '';
+
+        q.alternativas.forEach((alt, idx) => {
+            const letter = String.fromCharCode(65 + idx);
+            const isCorrect = q.gabarito === letter;
+            const item = criarAlternativaItem(letter, alt, isCorrect);
+            container.appendChild(item);
+        });
+    }
+
+    // Tipo aberta
+    if (q.tipo === 'aberta') {
+        const respostaSection = document.getElementById('respostaSection');
+        respostaSection.style.display = 'block';
+        if (q.resposta_esperada) {
+            document.getElementById('resposta-esperada').value = q.resposta_esperada;
+        }
+    }
+}
+
+// ===== EVENTOS / UPLOAD / SUBMIT =====
+function setupEventListeners() {
+    const tipoSelect = document.getElementById("tipo-questao");
+    const alternativasSection = document.getElementById("alternativasSection");
+    const respostaSection = document.getElementById("respostaSection");
+    const alternativasContainer = document.getElementById("alternativasContainer");
+    const btnAddAlt = document.getElementById("btnAddAlternativa");
+    const enunciado = document.getElementById("enunciado");
+    const charCount = document.getElementById("charCount");
+    const form = document.getElementById("questionForm");
+
+    const uploadArea = document.getElementById("uploadArea");
+    const inputFile = document.getElementById("imagem-questao");
+    const preview = document.getElementById("imagemPreview");
+    const previewImg = document.getElementById("imagemPreviewImg");
+    const removeBtn = document.getElementById("removeImagemBtn");
+    const token = localStorage.getItem("token");
+
+    // Upload imagem
+    uploadArea.addEventListener("click", () => inputFile.click());
+
+    uploadArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadArea.classList.add("dragover");
+    });
+
+    uploadArea.addEventListener("dragleave", () => {
+        uploadArea.classList.remove("dragover");
+    });
+
+    uploadArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove("dragover");
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            inputFile.files = files;
+            handleImageUpload();
+        }
+    });
+
+    inputFile.addEventListener("change", handleImageUpload);
+
+    async function handleImageUpload() {
+        const file = inputFile.files[0];
+        const errorMessage = document.getElementById("errorMessage");
+        const successMessage = document.getElementById("successMessage");
+        errorMessage.style.display = "none";
+        successMessage.style.display = "none";
+
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+            errorMessage.textContent = "❌ Arquivo deve ser uma imagem";
+            errorMessage.style.display = "block";
+            return;
+        }
+
+        if (file.size > 3 * 1024 * 1024) {
+            errorMessage.textContent = "❌ Imagem muito grande. Máximo 3MB.";
+            errorMessage.style.display = "block";
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewImg.src = e.target.result;
+            preview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            uploadArea.style.opacity = "0.6";
+            uploadArea.style.pointerEvents = "none";
+
+            const resp = await fetch(`${API_BASE}/questions/upload-image`, {
+                method: "POST",
+                headers: { "Authorization": "Bearer " + token },
+                body: formData
+            });
+
+            const data = await resp.json().catch(() => ({}));
+            if (!resp.ok) {
+                throw new Error(data.detail || "Erro ao fazer upload da imagem");
+            }
+
+            imageUrl = data.url;
+            imageRemoved = false;
+
+            successMessage.textContent = "✅ Imagem enviada com sucesso!";
+            successMessage.style.display = "block";
+        } catch (err) {
+            errorMessage.textContent = "❌ Erro ao fazer upload: " + err.message;
+            errorMessage.style.display = "block";
+            preview.style.display = "none";
+            imageUrl = null;
+        } finally {
+            uploadArea.style.opacity = "1";
+            uploadArea.style.pointerEvents = "auto";
+        }
+    }
+
+    removeBtn.addEventListener("click", () => {
+        imageUrl = null;
+        imageRemoved = true;
+        preview.style.display = "none";
+        inputFile.value = "";
+    });
+
+    // Troca tipo
+    tipoSelect.addEventListener("change", () => {
+        const tipo = tipoSelect.value;
+        if (tipo === "fechada") {
+            alternativasSection.style.display = "block";
+            respostaSection.style.display = "none";
+        } else if (tipo === "aberta") {
+            alternativasSection.style.display = "none";
+            respostaSection.style.display = "block";
+        } else {
+            alternativasSection.style.display = "none";
+            respostaSection.style.display = "none";
+        }
+    });
+
+    // Add alternativa
+    btnAddAlt.addEventListener("click", () => {
+        const count = alternativasContainer.children.length;
+        const letter = String.fromCharCode(65 + count);
+        alternativasContainer.appendChild(criarAlternativaItem(letter));
+    });
+
+    // contador
+    enunciado.addEventListener("input", () => {
+        charCount.textContent = enunciado.value.length;
+    });
+
+    // submit
+    form.addEventListener("submit", handleSubmit);
+}
+
+// Helpers alternativas
+function criarAlternativaItem(letter, text = '', isCorrect = false) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "alternativa-item";
+
+    const letraDiv = document.createElement("div");
+    letraDiv.className = "alternativa-letra";
+    letraDiv.textContent = letter;
+
+    const textarea = document.createElement("textarea");
+    textarea.placeholder = `Alternativa ${letter}`;
+    textarea.className = "alternativa-input";
+    textarea.value = text;
+
+    const radio = document.createElement("input");
+    radio.type = "radio";
+    radio.name = "gabarito";
+    radio.className = "gabarito-radio";
+    radio.value = letter;
+    if (isCorrect) radio.checked = true;
+
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.className = "remove-alternativa-btn";
+    removeBtn.textContent = "🗑️";
+    removeBtn.addEventListener("click", () => {
+        wrapper.remove();
+        relabelAlternativas();
+    });
+
+    wrapper.appendChild(letraDiv);
+    wrapper.appendChild(textarea);
+    wrapper.appendChild(radio);
+    wrapper.appendChild(removeBtn);
+
+    return wrapper;
+}
+
+function relabelAlternativas() {
+    const container = document.getElementById('alternativasContainer');
+    const items = Array.from(container.children);
+    items.forEach((item, idx) => {
+        const letter = String.fromCharCode(65 + idx);
+        item.querySelector('.alternativa-letra').textContent = letter;
+        item.querySelector('textarea').placeholder = `Alternativa ${letter}`;
+        item.querySelector('input[type="radio"]').value = letter;
+    });
+}
+
+// PUT
+async function handleSubmit(evt) {
+    evt.preventDefault();
+
+    const successMessage = document.getElementById("successMessage");
+    const errorMessage = document.getElementById("errorMessage");
+    const filtroSelect = document.getElementById("filtro-principal");
+    const novaCategoriaInput = document.getElementById("nova-categoria");
+
+    successMessage.style.display = "none";
+    errorMessage.style.display = "none";
+
+    const tipo = document.getElementById("tipo-questao").value;
+    const titulo = document.getElementById("titulo").value.trim();
+    const enun = document.getElementById("enunciado").value.trim();
+    const dificuldade = document.getElementById("dificuldade").value || null;
+    const subgenero = document.getElementById("subgenero").value || null;
+    const respostaEsperada = document.getElementById("resposta-esperada").value.trim();
+    const fonteNome = document.getElementById("fonte-nome").value.trim() || null;
+    const fonteAno = document.getElementById("fonte-ano").value
+        ? parseInt(document.getElementById("fonte-ano").value, 10)
+        : null;
+
+    const selectedCategoria = filtroSelect.value.trim();
+    const novaCategoria = novaCategoriaInput.value.trim();
+    const filtroPrincipal = novaCategoria || selectedCategoria || "";
+
+    if (!tipo) {
+        errorMessage.textContent = "❌ Selecione o tipo de questão.";
+        errorMessage.style.display = "block";
+        return;
+    }
+
+    if (!titulo || !enun) {
+        errorMessage.textContent = "❌ Preencha título e enunciado.";
+        errorMessage.style.display = "block";
+        return;
+    }
+
+    if (!filtroPrincipal) {
+        errorMessage.textContent = "❌ Selecione uma categoria ou informe uma nova.";
+        errorMessage.style.display = "block";
+        return;
+    }
+
+    const payload = {
+        tipo,
+        titulo,
+        enunciado: enun,
+        filtro_principal: filtroPrincipal
+    };
+
+    if (dificuldade) payload.dificuldade = dificuldade;
+    if (subgenero) payload.subgenero = subgenero;
+    if (fonteNome) payload.fonte_nome = fonteNome;
+    if (fonteAno) payload.fonte_ano = fonteAno;
+
+    if (imageRemoved && !imageUrl) {
+        payload.image_url = None;
+    } else if (imageUrl) {
+        payload.image_url = imageUrl;
+    }
+
+    if (tipo === "fechada") {
+        const container = document.getElementById('alternativasContainer');
+        const items = Array.from(container.children);
+
+        const alternativas = items
+            .map(it => it.querySelector("textarea").value.trim())
+            .filter(x => x);
+
+        if (alternativas.length < 2) {
+            errorMessage.textContent = "❌ Insira pelo menos 2 alternativas.";
+            errorMessage.style.display = "block";
+            return;
+        }
+
+        const gabaritoChecked = document.querySelector('input[name="gabarito"]:checked');
+        if (!gabaritoChecked) {
+            errorMessage.textContent = "❌ Selecione o gabarito.";
+            errorMessage.style.display = "block";
+            return;
+        }
+
+        payload.alternativas = alternativas;
+        payload.gabarito = gabaritoChecked.value;
+    } else if (tipo === "aberta" && respostaEsperada) {
+        payload.resposta_esperada = respostaEsperada;
+    }
+
+    const submitBtn = document.getElementById("submitBtn");
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.classList.add("loading");
+    submitBtn.textContent = "Salvando";
+
+    try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${API_BASE}/questions/${questionId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            throw new Error(data.detail || "Erro ao atualizar questão");
+        }
+
+        successMessage.textContent = "✅ Questão atualizada com sucesso!";
+        successMessage.style.display = "block";
+
+        setTimeout(() => {
+            window.location.href = `question-details.html?id=${questionId}`;
+        }, 1500);
+    } catch (err) {
+        console.error(err);
+        errorMessage.textContent = "❌ " + err.message;
+        errorMessage.style.display = "block";
+        submitBtn.disabled = false;
+        submitBtn.classList.remove("loading");
+        submitBtn.textContent = originalText;
+    }
+}
+</script>
+
+</body>
+</html>
